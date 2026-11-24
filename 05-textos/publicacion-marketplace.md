@@ -1,7 +1,14 @@
-# NexoLab — Textos para Facebook Marketplace
+# Tareita — Textos para Facebook Marketplace
 
-Textos listos para copiar y pegar. Úsalos junto con la imagen
-`03-publicidad-marketplace/NexoLab-marketplace-1080.png`.
+Textos listos para copiar y pegar. Úsalos con las imágenes de
+`03-publicidad-marketplace/`:
+
+1. **Foto principal:** `Tareita-marketplace-vertical-1080x1350.png` (vertical 4:5).
+2. **Segunda foto (opcional):** `Tareita-marketplace-cuadrado-1080x1080.png`.
+
+En la cuadrícula de Marketplace las fotos se ven recortadas en cuadrado. El
+anuncio vertical está diseñado para que el titular y el precio queden dentro de
+ese recorte.
 
 ---
 
@@ -14,7 +21,7 @@ Opción recomendada:
 Otras opciones:
 
 - Ayuda con proyectos de programación, AutoCAD, matemáticas y Excel
-- NexoLab | Asesorías académicas y soluciones digitales en línea
+- Tareita | Asesorías académicas y soluciones digitales en línea
 - Tutorías de matemáticas y física, programación y Excel, 100 % en línea
 
 ## 2. Campos de Marketplace
@@ -32,7 +39,7 @@ Otras opciones:
 ## 3. Descripción completa
 
 ```text
-¿Necesitas ayuda con tus proyectos? En NexoLab te acompañamos.
+¿Necesitas ayuda con tus proyectos? En Tareita te acompañamos.
 
 Somos un emprendimiento de soluciones digitales que trabaja 100 % en línea. Ayudamos a estudiantes de bachillerato y universidad, profesionales, emprendedores y pequeños negocios con trabajos académicos, tecnológicos y digitales. Cada servicio se adapta a lo que necesitas y te explicamos el proceso para que entiendas el resultado.
 
@@ -73,7 +80,7 @@ El precio final depende del tipo de servicio, su complejidad y el tiempo de entr
 • Organización y elaboración de documentos PDF
 • Asesoría en herramientas digitales e inteligencia artificial
 
-¿POR QUÉ ELEGIR NEXOLAB?
+¿POR QUÉ ELEGIR TAREITA?
 ✔ Atención 100 % en línea, desde donde estés.
 ✔ Precios accesibles, de acuerdo con cada proyecto.
 ✔ Atención personalizada: trabajamos sobre tus instrucciones y tus fechas.
@@ -90,7 +97,7 @@ Con esa información te respondemos con el precio y el tiempo de entrega.
 
 ¡Escríbenos y cotiza tu proyecto!
 
-NexoLab | Conectamos tus ideas con soluciones.
+Tareita | Conectamos tus ideas con soluciones.
 ```
 
 ---
@@ -102,7 +109,7 @@ Para grupos de Facebook, estados de WhatsApp o una segunda publicación.
 ```text
 ¿Necesitas ayuda con tus proyectos? ¡Tenemos la solución!
 
-NexoLab ofrece servicios académicos, tecnológicos y digitales 100 % en línea:
+Tareita ofrece servicios académicos, tecnológicos y digitales 100 % en línea:
 • Programación: Python, C++, JavaScript, SQL
 • Diseño técnico: AutoCAD, SketchUp, modelado 3D
 • Asesorías académicas: matemáticas, física, estadística
@@ -112,7 +119,7 @@ NexoLab ofrece servicios académicos, tecnológicos y digitales 100 % en línea:
 Servicios desde $5 dólares (el precio depende del servicio y su complejidad).
 Cotizaciones sin compromiso. ¡Escríbenos por mensaje privado!
 
-NexoLab | Conectamos tus ideas con soluciones.
+Tareita | Conectamos tus ideas con soluciones.
 ```
 
 ---
@@ -124,7 +131,7 @@ Facebook permite guardarlas como "respuestas guardadas" para responder más ráp
 **Primer contacto**
 
 ```text
-¡Hola! Gracias por escribir a NexoLab. Con gusto te ayudamos.
+¡Hola! Gracias por escribir a Tareita. Con gusto te ayudamos.
 Para enviarte una cotización, cuéntanos:
 1. Qué servicio necesitas.
 2. Para qué fecha lo necesitas.

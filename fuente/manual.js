@@ -1,4 +1,4 @@
-// Manual de identidad visual (páginas 1600 × 900 → PDF).
+// Manual de identidad visual de Tareita (páginas 1600 × 900 → PDF).
 const fs = require('fs');
 const path = require('path');
 const B = require('./brand');
@@ -6,7 +6,7 @@ const { categorias: I, beneficios: BI } = require('./iconos');
 const C = B.COLORS;
 
 const fontFaces = (rel) => [
-  ['Montserrat', 'montserrat', [400, 500, 600, 700, 800]],
+  ['Poppins', 'poppins', [400, 500, 600, 700, 800]],
   ['Inter', 'inter', [400, 500, 600, 700]],
 ].map(([fam, pkg, ws]) => ws.map((w) =>
   `@font-face{font-family:'${fam}';font-weight:${w};font-display:block;src:url('${rel}/node_modules/@fontsource/${pkg}/files/${pkg}-latin-${w}-normal.woff2') format('woff2')}`
@@ -39,38 +39,39 @@ function cmyk(h) {
 // ---------- diagrama de construcción ----------
 const r = (v) => +v.toFixed(2);
 function construction() {
-  const s = B.symbolParts();
-  const k = 5.2, ox = 120, oy = 70; // escala y origen
+  const s = B.symbolParts(), g = B.GRID, w = g.w;
+  const k = 5, ox = 150, oy = 50; // escala y origen
   const X = (v) => ox + v * k, Y = (v) => oy + v * k;
-  const g = B.GRID;
-  const xs = [0, g.stem, g.stem + g.gap, g.stem * 2 + g.gap, s.w];
-  const ys = [0, g.v, g.h - g.v, g.h - g.stem, g.h];
   const guide = '#C9D2DE';
   let lines = '';
-  xs.forEach((x) => { lines += `<line x1="${X(x)}" y1="${oy - 26}" x2="${X(x)}" y2="${Y(g.h) + 26}" stroke="${guide}" stroke-width="1" stroke-dasharray="4 4"/>`; });
-  ys.forEach((y) => { lines += `<line x1="${ox - 26}" y1="${Y(y)}" x2="${X(s.w) + 26}" y2="${Y(y)}" stroke="${guide}" stroke-width="1" stroke-dasharray="4 4"/>`; });
-  const dim = (x1, x2, y, label) => `<line x1="${X(x1)}" y1="${y}" x2="${X(x2)}" y2="${y}" stroke="${C.slate}" stroke-width="1.2"/><line x1="${X(x1)}" y1="${y - 6}" x2="${X(x1)}" y2="${y + 6}" stroke="${C.slate}" stroke-width="1.2"/><line x1="${X(x2)}" y1="${y - 6}" x2="${X(x2)}" y2="${y + 6}" stroke="${C.slate}" stroke-width="1.2"/><text x="${(X(x1) + X(x2)) / 2}" y="${y - 10}" text-anchor="middle">${label}</text>`;
-  const dimV = (y1, y2, x, label) => `<line x1="${x}" y1="${Y(y1)}" x2="${x}" y2="${Y(y2)}" stroke="${C.slate}" stroke-width="1.2"/><line x1="${x - 6}" y1="${Y(y1)}" x2="${x + 6}" y2="${Y(y1)}" stroke="${C.slate}" stroke-width="1.2"/><line x1="${x - 6}" y1="${Y(y2)}" x2="${x + 6}" y2="${Y(y2)}" stroke="${C.slate}" stroke-width="1.2"/><text x="${x - 12}" y="${(Y(y1) + Y(y2)) / 2 + 5}" text-anchor="end">${label}</text>`;
-  const ang = Math.round(Math.atan((g.h - g.v) / g.gap) * 180 / Math.PI);
-  return `<svg viewBox="0 0 640 520" class="constr" font-family="Inter" font-size="15" fill="${C.slate}">
+  [0, 12, 28, 46, 80].forEach((x) => { lines += `<line x1="${X(x)}" y1="${oy - 24}" x2="${X(x)}" y2="${Y(80) + 24}" stroke="${guide}" stroke-width="1" stroke-dasharray="4 4"/>`; });
+  [0, 18, 34, 80].forEach((y) => { lines += `<line x1="${ox - 24}" y1="${Y(y)}" x2="${X(80) + 24}" y2="${Y(y)}" stroke="${guide}" stroke-width="1" stroke-dasharray="4 4"/>`; });
+  const tick = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${C.slate}" stroke-width="1.2"/>`;
+  const dim = (x1, x2, y, label) => tick(X(x1), y, X(x2), y) + tick(X(x1), y - 6, X(x1), y + 6) + tick(X(x2), y - 6, X(x2), y + 6) + `<text x="${(X(x1) + X(x2)) / 2}" y="${y - 10}" text-anchor="middle">${label}</text>`;
+  const dimV = (y1, y2, x, label) => tick(x, Y(y1), x, Y(y2)) + tick(x - 6, Y(y1), x + 6, Y(y1)) + tick(x - 6, Y(y2), x + 6, Y(y2)) + `<text x="${x - 12}" y="${(Y(y1) + Y(y2)) / 2 + 5}" text-anchor="end">${label}</text>`;
+  const [vx, vy] = g.check[0], R = 74, a = Math.PI / 4;
+  const arc = `<line x1="${X(vx)}" y1="${Y(vy)}" x2="${X(vx) + R + 26}" y2="${Y(vy)}" stroke="${C.slate}" stroke-width="1" stroke-dasharray="3 3"/><path d="M${X(vx) + R} ${Y(vy)} A ${R} ${R} 0 0 0 ${r(X(vx) + R * Math.cos(a))} ${r(Y(vy) - R * Math.sin(a))}" fill="none" stroke="${C.slate}" stroke-width="1.2"/><text x="${r(X(vx) + (R + 14) * Math.cos(a / 2))}" y="${r(Y(vy) - (R + 14) * Math.sin(a / 2) + 5)}">45°</text>`;
+  return `<svg viewBox="0 0 640 560" class="constr" font-family="Inter" font-size="15" fill="${C.slate}">
   ${lines}
-  <g transform="translate(${ox} ${oy}) scale(${k})"><path fill="${C.navy}" d="${s.left}"/><path fill="${C.navy}" d="${s.right}"/><path fill="${C.gold}" d="${s.diag}"/></g>
-  ${dim(0, g.stem, Y(g.h) + 52, 'x')}
-  ${dim(g.stem, g.stem + g.gap, Y(g.h) + 52, '1.86x')}
-  ${dim(g.stem + g.gap, g.stem * 2 + g.gap, Y(g.h) + 52, 'x')}
-  ${dim(g.stem * 2 + g.gap, s.w, Y(g.h) + 52, '1.29x')}
-  ${dimV(0, g.h, ox - 44, '4.29x')}
-  ${(() => { const cx = X(g.stem), cy = Y(0), R = 58, a = ang * Math.PI / 180; return `<path d="M${cx + R} ${cy} A ${R} ${R} 0 0 1 ${r(cx + R * Math.cos(a))} ${r(cy + R * Math.sin(a))}" fill="none" stroke="${C.slate}" stroke-width="1.2"/><text x="${r(cx + (R + 16) * Math.cos(a / 2))}" y="${r(cy + (R + 16) * Math.sin(a / 2) + 5)}">${ang}°</text>`; })()}
-  <text x="${ox}" y="${Y(g.h) + 96}">x = ancho del trazo vertical · retícula 72 × 60</text>
+  <g transform="translate(${ox} ${oy}) scale(${k})"><path fill="${C.gold}" d="${s.check}"/><path fill="${C.navy}" d="${s.stem}"/><path fill="${C.navy}" d="${s.bar}"/></g>
+  ${arc}
+  ${dim(12, 28, Y(80) + 48, 'x')}
+  ${dim(0, 80, Y(80) + 84, '5x')}
+  ${dimV(18, 34, ox - 40, 'x')}
+  ${dimV(0, 80, ox - 90, '5x')}
+  <text x="${ox}" y="${Y(80) + 122}">x = grosor del trazo · retícula de 5x × 5x · terminaciones redondas</text>
 </svg>`;
 }
 
-function nl() {
-  const s = B.symbolParts();
-  const one = (lit, op) => `<svg viewBox="-4 -4 80 68"><path fill="${C.navy}" opacity="${lit.includes('l') ? 1 : op}" d="${s.left}"/><path fill="${C.navy}" opacity="${lit.includes('r') ? 1 : op}" d="${s.right}"/><path fill="${lit.includes('d') ? C.gold : C.navy}" opacity="${lit.includes('d') ? 1 : op}" d="${s.diag}"/></svg>`;
-  const g = B.GRID, x2 = g.stem + g.gap;
-  const stemN = B.roundedPath([[x2, 0], [x2 + g.stem, 0], [x2 + g.stem, g.h], [x2, g.h]], [g.r, g.r, g.r, 0]);
-  return { n: one('ld', 1).replace(`d="${s.right}"`, `d="${stemN}"`), l: `<svg viewBox="-4 -4 80 68"><path fill="${C.navy}" d="${s.right}"/></svg>`, all: one('lrd', 1) };
+function conceptParts() {
+  const s = B.symbolParts(), r8 = B.GRID.w / 2;
+  const vb = 'viewBox="-4 -4 88 88"';
+  const tick = B.capsule([14, 50], [30, 66], r8) + B.capsule([30, 66], [72, 20], r8);
+  return {
+    t: `<svg ${vb}><path fill="${C.navy}" d="${s.stem}"/><path fill="${C.navy}" d="${s.bar}"/></svg>`,
+    check: `<svg ${vb}><path fill="${C.gold}" d="${tick}"/></svg>`,
+    all: `<svg ${vb}><path fill="${C.gold}" d="${s.check}"/><path fill="${C.navy}" d="${s.stem}"/><path fill="${C.navy}" d="${s.bar}"/></svg>`,
+  };
 }
 
 // ---------- páginas ----------
@@ -92,9 +93,9 @@ page('cover', `
 page('', `${head('01', 'La marca', 'Quiénes somos')}
   <div class="cols c2">
     <div>
-      <p class="lead">NexoLab ofrece servicios académicos, tecnológicos y digitales, brindando asesoría, acompañamiento y soluciones personalizadas a estudiantes, profesionales y pequeños negocios.</p>
+      <p class="lead">Tareita ofrece servicios académicos, tecnológicos y digitales, brindando asesoría, acompañamiento y soluciones personalizadas a estudiantes, profesionales y pequeños negocios.</p>
       <div class="facts">
-        <div><span>Nombre</span><b>NexoLab</b></div>
+        <div><span>Nombre</span><b>Tareita — diminutivo de “tarea”: cercano y fácil de recordar.</b></div>
         <div><span>Descriptor</span><b>Soluciones Digitales</b></div>
         <div><span>Eslogan</span><b>Conectamos tus ideas con soluciones.</b></div>
         <div><span>Modalidad</span><b>100 % en línea</b></div>
@@ -104,7 +105,7 @@ page('', `${head('01', 'La marca', 'Quiénes somos')}
     <div>
       <h4>Personalidad</h4>
       <div class="traits">
-        ${[['Moderna', 'Lenguaje visual actual, sin adornos.'], ['Tecnológica', 'Geometría precisa, construida sobre retícula.'], ['Minimalista', 'Pocos elementos, cada uno con función.'], ['Comercial', 'Mensajes claros: qué hacemos y cuánto cuesta.'], ['Profesional', 'Consistencia en color, tipografía y espacios.'], ['Cercana', 'Tuteo, esquinas suaves, explicaciones simples.']].map(([t, d]) => `<div><b>${t}</b><span>${d}</span></div>`).join('')}
+        ${[['Moderna', 'Lenguaje visual actual, sin adornos.'], ['Tecnológica', 'Geometría precisa, construida sobre una retícula.'], ['Minimalista', 'Pocos elementos, cada uno con función.'], ['Comercial', 'Mensajes claros: qué hacemos y cuánto cuesta.'], ['Profesional', 'Consistencia en color, tipografía y espacios.'], ['Cercana', 'Como su nombre: tuteo, formas suaves, explicaciones simples.']].map(([t, d]) => `<div><b>${t}</b><span>${d}</span></div>`).join('')}
       </div>
       <h4 style="margin-top:34px">Tono de comunicación</h4>
       <div class="tone">
@@ -115,18 +116,18 @@ page('', `${head('01', 'La marca', 'Quiénes somos')}
   </div>`);
 
 // 3 · Símbolo
-const parts = nl();
+const parts = conceptParts();
 page('', `${head('02', 'El símbolo', 'Concepto y construcción')}
   <div class="cols c2 sym">
     <div>
       <div class="eq">
-        <figure>${parts.n}<figcaption>N de Nexo</figcaption></figure><span>+</span>
-        <figure>${parts.l}<figcaption>L de Lab</figcaption></figure><span>=</span>
-        <figure>${parts.all}<figcaption>NexoLab</figcaption></figure>
+        <figure>${parts.t}<figcaption>t de tarea</figcaption></figure><span>+</span>
+        <figure>${parts.check}<figcaption>visto bueno</figcaption></figure><span>=</span>
+        <figure>${parts.all}<figcaption>Tareita</figcaption></figure>
       </div>
-      <p class="body">El monograma une la <b>N</b> de Nexo y la <b>L</b> de Lab en una sola pieza: el trazo derecho de la N es, al mismo tiempo, el trazo vertical de la L. Las dos palabras comparten un elemento, como un proyecto comparte la idea del cliente y la solución del equipo.</p>
-      <p class="body">La <b>diagonal dorada</b> es el nexo: une el lado de la idea (izquierda) con el lado de la solución (derecha). Es el único elemento en color de acento y resume el eslogan: <i>Conectamos tus ideas con soluciones</i>.</p>
-      <p class="body muted">Construcción geométrica sobre una retícula modular. Esquinas exteriores con radio suave (0.18x) para una lectura cercana; uniones internas en arista viva para mantener precisión técnica.</p>
+      <p class="body">El símbolo es una <b>t</b> minúscula, la inicial de Tareita, cuya cola sube y se convierte en un <b>visto bueno ✓</b>. Es la forma más sencilla de contar lo que hacemos: recibimos tu tarea o tu proyecto y te lo entregamos resuelto.</p>
+      <p class="body">El ✓ en <b>Amarillo Lápiz</b> es el único elemento en color de acento. Sube a 45°, en la dirección del avance, y nace en el mismo punto donde termina la t: la tarea y la solución salen del mismo trazo. El punto de la <b>i</b> del logotipo repite ese amarillo.</p>
+      <p class="body muted">Trazo uniforme con terminaciones redondas sobre una retícula de 80 × 80: sin aristas, amable como el diminutivo del nombre y legible incluso a 16 px.</p>
     </div>
     <div class="constr-wrap">${construction()}</div>
   </div>`);
@@ -145,15 +146,15 @@ page('', `${head('04', 'Versiones de color', 'Positivo, negativo y una tinta')}
   <div class="colorv">
     <div style="background:#fff;border:1px solid #DCE3EC"><div class="art">${L.hColor}</div><p>Positivo a color</p></div>
     <div style="background:${C.navy}"><div class="art">${L.hNeg}</div><p class="w">Negativo a color</p></div>
-    <div style="background:${C.mist}"><div class="art">${L.hNavy}</div><p>Una tinta · Azul Nexo</p></div>
+    <div style="background:${C.mist}"><div class="art">${L.hNavy}</div><p>Una tinta · Azul Tinta</p></div>
     <div style="background:${C.blue}"><div class="art">${L.hWhite}</div><p class="w">Una tinta · Blanco</p></div>
-    <div style="background:${C.gold}"><div class="art">${L.hNavy}</div><p>Una tinta sobre Dorado Lab</p></div>
+    <div style="background:${C.gold}"><div class="art">${L.hNavy}</div><p>Una tinta sobre Amarillo Lápiz</p></div>
     <div style="background:#fff;border:1px solid #DCE3EC"><div class="art">${L.hBlack}</div><p>Una tinta · Negro (fotocopias, sellos)</p></div>
   </div>`);
 
 // 6 · Protección y tamaño mínimo
 const clr = () => {
-  const xs = 14; // x en unidades del símbolo
+  const xs = B.GRID.w; // x = grosor del trazo del símbolo
   const pad = xs * 2;
   const svgH = B.horizontal({ fg: C.navy, accent: C.gold, sub: C.slate });
   const vb = svgH.match(/viewBox="([^"]+)"/)[1].split(' ').map(Number);
@@ -170,7 +171,7 @@ page('', `${head('05', 'Área de protección y tamaño mínimo', 'Reglas de uso'
   <div class="cols c2">
     <div>
       <div class="clear-wrap">${clr()}</div>
-      <p class="body">Alrededor del logotipo se reserva un espacio libre de <b>2x</b>, donde <b>x</b> es el ancho del trazo vertical del símbolo. Ningún texto, borde o imagen debe invadir esta zona.</p>
+      <p class="body">Alrededor del logotipo se reserva un espacio libre de <b>2x</b>, donde <b>x</b> es el grosor del trazo del símbolo. Ningún texto, borde o imagen debe invadir esta zona.</p>
     </div>
     <div>
       <h4>Tamaños mínimos</h4>
@@ -194,25 +195,25 @@ const sw = (name, hex, role, big) => {
 };
 page('', `${head('06', 'Paleta de colores', 'Color')}
   <div class="pal">
-    ${sw('Azul Nexo', C.navy, 'Principal · confianza y profesionalismo', 1)}
-    ${sw('Dorado Lab', C.gold, 'Acento · energía e innovación', 1)}
-    ${sw('Blanco', C.white, 'Base · limpieza y claridad', 1)}
-    ${sw('Azul Enlace', C.blue, 'Secundario · detalles y enlaces')}
-    ${sw('Gris Niebla', C.mist, 'Fondos de tarjetas y secciones')}
-    ${sw('Gris Pizarra', C.slate, 'Textos secundarios')}
+    ${sw(B.NAMES.navy, C.navy, 'Principal · confianza y profesionalismo', 1)}
+    ${sw(B.NAMES.gold, C.gold, 'Acento · energía y tarea cumplida', 1)}
+    ${sw(B.NAMES.white, C.white, 'Base · limpieza y claridad', 1)}
+    ${sw(B.NAMES.blue, C.blue, 'Secundario · detalles y enlaces')}
+    ${sw(B.NAMES.mist, C.mist, 'Fondos de tarjetas y secciones')}
+    ${sw(B.NAMES.slate, C.slate, 'Textos secundarios')}
   </div>
   <div class="prop"><span style="flex:55;background:${C.navy}">55 %</span><span style="flex:25;background:#fff;color:${C.navy};border:1px solid #DCE3EC">25 %</span><span style="flex:12;background:${C.mist};color:${C.navy}">12 %</span><span style="flex:8;background:${C.gold};color:${C.navy}">8 %</span></div>
-  <p class="note">Proporción recomendada en una pieza. El dorado es acento: precios, llamadas a la acción y la diagonal del símbolo. No usar texto dorado sobre fondo blanco (contraste insuficiente). · *CMYK aproximado: confirmar con prueba de impresión.</p>`);
+  <p class="note">Proporción recomendada en una pieza. El amarillo es acento: precios, llamadas a la acción, el ✓ del símbolo y el punto de la i. No usar texto amarillo sobre fondo blanco (contraste insuficiente). Los nombres de los colores vienen de los útiles de una tarea. · *CMYK aproximado: confirmar con prueba de impresión.</p>`);
 
 // 8 · Tipografía
 page('', `${head('07', 'Tipografía', 'Familias tipográficas')}
   <div class="cols c2 type">
     <div>
-      <p class="fam">Montserrat</p>
-      <p class="aa" style="font-family:Montserrat;font-weight:800">Aa</p>
+      <p class="fam">Poppins</p>
+      <p class="aa" style="font-family:Poppins;font-weight:700">Aa</p>
       <p class="role">Titulares, logotipo, etiquetas y cifras.</p>
-      <p class="weights" style="font-family:Montserrat"><span style="font-weight:500">Medium 500</span><span style="font-weight:600">SemiBold 600</span><span style="font-weight:700">Bold 700</span><span style="font-weight:800">ExtraBold 800</span></p>
-      <p class="glyphs" style="font-family:Montserrat;font-weight:700">ABCDEFGHIJKLMNÑOPQRSTUVWXYZ<br>abcdefghijklmnñopqrstuvwxyz<br>0123456789 ¿? ¡! $ % áéíóú</p>
+      <p class="weights" style="font-family:Poppins"><span style="font-weight:500">Medium 500</span><span style="font-weight:600">SemiBold 600</span><span style="font-weight:700">Bold 700</span><span style="font-weight:800">ExtraBold 800</span></p>
+      <p class="glyphs" style="font-family:Poppins;font-weight:700">ABCDEFGHIJKLMNÑOPQRSTUVWXYZ<br>abcdefghijklmnñopqrstuvwxyz<br>0123456789 ¿? ¡! $ % áéíóú</p>
     </div>
     <div>
       <p class="fam">Inter</p>
@@ -220,14 +221,14 @@ page('', `${head('07', 'Tipografía', 'Familias tipográficas')}
       <p class="role">Textos de lectura, listas, notas y botones.</p>
       <p class="weights" style="font-family:Inter"><span style="font-weight:400">Regular 400</span><span style="font-weight:500">Medium 500</span><span style="font-weight:600">SemiBold 600</span><span style="font-weight:700">Bold 700</span></p>
       <div class="scale">
-        <p style="font:800 34px/1.05 Montserrat;letter-spacing:-.01em">TITULAR EN MAYÚSCULAS</p>
-        <p style="font:800 20px/1.2 Montserrat;color:${C.navy};letter-spacing:.02em">SUBTÍTULO DE SECCIÓN</p>
+        <p style="font:700 34px/1.05 Poppins;letter-spacing:-.01em">TITULAR EN MAYÚSCULAS</p>
+        <p style="font:700 20px/1.2 Poppins;color:${C.navy};letter-spacing:.02em">SUBTÍTULO DE SECCIÓN</p>
         <p style="font:400 17px/1.5 Inter;color:${C.slate}">Texto de lectura en Inter Regular. Frases cortas, claras y en segunda persona.</p>
-        <p style="font:700 13px/1 Montserrat;letter-spacing:.16em;color:${C.blue}">ETIQUETA · DESCRIPTOR</p>
+        <p style="font:700 13px/1 Poppins;letter-spacing:.16em;color:${C.blue}">ETIQUETA · DESCRIPTOR</p>
       </div>
     </div>
   </div>
-  <p class="note">Ambas familias son gratuitas (licencia SIL Open Font License) y están disponibles en Google Fonts. Alternativa en Office/Canva: Montserrat + Inter, o Poppins + Inter.</p>`);
+  <p class="note">Ambas familias son gratuitas (licencia SIL Open Font License) y están disponibles en Google Fonts. Si Poppins no está disponible (por ejemplo, en Office), usa Montserrat; en lugar de Inter, usa Arial.</p>`);
 
 // 9 · Iconografía y recursos
 page('', `${head('08', 'Iconografía y recursos gráficos', 'Sistema visual')}
@@ -237,14 +238,14 @@ page('', `${head('08', 'Iconografía y recursos gráficos', 'Sistema visual')}
       <div class="icons">
         ${[['programacion', 'Programación'], ['diseno', 'Diseño técnico'], ['academicas', 'Asesorías académicas'], ['empresariales', 'Soluciones empresariales'], ['documentos', 'Documentos digitales'], ['mensaje', 'Contacto']].map(([k, t]) => `<div>${I[k]()}<span>${t}</span></div>`).join('')}
       </div>
-      <p class="body muted">Trazo lineal uniforme, terminaciones redondeadas y un solo detalle en Dorado Lab por ícono. Sin sombras, degradados ni volúmenes.</p>
+      <p class="body muted">Trazo lineal uniforme, terminaciones redondeadas y un solo detalle en Amarillo Lápiz por ícono. Sin sombras, degradados ni volúmenes.</p>
     </div>
     <div>
       <h4>Recursos</h4>
       <div class="res">
-        <div class="r1"><div class="diag"></div><p><b>La diagonal</b>Franja inclinada a ${Math.round(Math.atan((60 - 24) / 26) * 180 / Math.PI)}°, el mismo ángulo del símbolo. Se usa como fondo sutil, nunca como decoración repetida.</p></div>
+        <div class="r1"><div class="diag"></div><p><b>La diagonal</b>Franja inclinada a 45°, el mismo ángulo del ✓. Se usa como fondo sutil, nunca como decoración repetida.</p></div>
         <div class="r2"><div class="pricetag"><span class="k">SERVICIOS DESDE</span><span class="a">$5</span></div><p><b>Bloque de precio</b>Siempre acompañado de “desde” y de una nota: el precio final depende del servicio.</p></div>
-        <div class="r3"><div class="card"><span class="n">01</span><b>PROGRAMACIÓN</b><small>Python | C++ | JavaScript | SQL</small></div><p><b>Tarjeta de servicio</b>Fondo Gris Niebla, número de categoría, título en Montserrat y detalle en Inter.</p></div>
+        <div class="r3"><div class="card"><span class="n">01</span><b>PROGRAMACIÓN</b><small>Python | C++ | JavaScript | SQL</small></div><p><b>Tarjeta de servicio</b>Fondo Gris Papel, número de categoría, título en Poppins y detalle en Inter.</p></div>
       </div>
     </div>
   </div>`);
@@ -255,7 +256,7 @@ const wrong = [
   [`<div class="art" style="transform:rotate(-12deg)">${L.hColor}</div>`, 'No rotar'],
   [`<div class="art">${strip(B.horizontal({ fg: '#7B2CBF', accent: '#22C55E', sub: '#7B2CBF' }))}</div>`, 'No cambiar los colores'],
   [`<div class="art" style="filter:drop-shadow(6px 6px 4px rgba(0,0,0,.45))">${L.hColor}</div>`, 'No agregar sombras ni efectos'],
-  [`<div class="art fake"><svg viewBox="0 0 72 60" style="height:62px;width:auto">${B.symbolSVG(C.navy, C.gold)}</svg><span>NexoLab</span></div>`, 'No cambiar la tipografía'],
+  [`<div class="art fake"><svg viewBox="0 0 80 80" style="height:70px;width:auto">${B.symbolSVG(C.navy, C.gold)}</svg><span>Tareita</span></div>`, 'No cambiar la tipografía'],
   [`<div class="art" style="background:#3A5A80;padding:24px">${L.hColor}</div>`, 'No usar sobre fondos sin contraste'],
 ];
 page('', `${head('09', 'Usos incorrectos', 'Qué evitar')}
@@ -264,16 +265,16 @@ page('', `${head('09', 'Usos incorrectos', 'Qué evitar')}
 // 11 · Aplicaciones
 page('', `${head('10', 'Aplicaciones', 'Marca en uso')}
   <div class="apps">
-    <figure class="ad"><img src="../03-publicidad-marketplace/NexoLab-marketplace-1080.png"><figcaption>Publicidad para Facebook Marketplace · 1080 × 1080 px</figcaption></figure>
+    <figure class="ad"><img src="../03-publicidad-marketplace/Tareita-marketplace-vertical-1080x1350.png"><figcaption>Publicidad vertical para Marketplace · 1080 × 1350 px</figcaption></figure>
     <div class="side">
-      <figure class="profile"><div class="ph-mock"><div class="avatar">${L.cCircle}</div><div><b>NexoLab | Soluciones Digitales</b><span>Conectamos tus ideas con soluciones.</span></div></div><figcaption>Foto de perfil (versión compacta)</figcaption></figure>
+      <figure class="profile"><div class="ph-mock"><div class="avatar">${L.cCircle}</div><div><b>Tareita | Soluciones Digitales</b><span>Conectamos tus ideas con soluciones.</span></div></div><figcaption>Foto de perfil (versión compacta)</figcaption></figure>
       <figure class="sig"><div class="sig-mock"><div class="art">${L.sColor}</div><div class="sig-t"><b>Atención 100 % en línea</b><span>Programación · Diseño técnico · Asesorías · Excel · Documentos</span></div></div><figcaption>Firma de correo / encabezado de documentos</figcaption></figure>
     </div>
   </div>`);
 
 function html(rel = '.') {
   const total = pages.length;
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>NexoLab — Manual de identidad</title><style>
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Tareita — Manual de identidad</title><style>
 ${fontFaces(rel)}
 @page{size:1600px 900px;margin:0}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -283,10 +284,10 @@ svg{display:block}
 .page:last-child{page-break-after:auto}
 .pn{position:absolute;left:88px;right:88px;bottom:32px;display:flex;justify-content:space-between;font:500 12px/1 Inter;color:#93A1B4;letter-spacing:.04em}
 .ph{display:flex;align-items:flex-start;gap:26px;margin-bottom:46px}
-.ph .num{font:800 15px/1 Montserrat;color:${C.navy};background:${C.gold};padding:9px 10px;border-radius:4px;margin-top:6px}
-.ph .kick{font:700 12px/1 Montserrat;letter-spacing:.18em;text-transform:uppercase;color:${C.slate}}
-.ph h2{font:800 40px/1.1 Montserrat;letter-spacing:-.01em;margin-top:9px}
-h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;color:${C.slate};margin-bottom:18px}
+.ph .num{font:700 15px/1 Poppins;color:${C.navy};background:${C.gold};padding:9px 10px;border-radius:4px;margin-top:6px}
+.ph .kick{font:700 12px/1 Poppins;letter-spacing:.18em;text-transform:uppercase;color:${C.slate}}
+.ph h2{font:700 40px/1.1 Poppins;letter-spacing:-.01em;margin-top:9px}
+h4{font:700 13px/1 Poppins;letter-spacing:.16em;text-transform:uppercase;color:${C.slate};margin-bottom:18px}
 .cols{display:grid;gap:80px}.c2{grid-template-columns:1fr 1fr}
 .lead{font:500 24px/1.45 Inter;color:${C.navy}}
 .body{font:400 16.5px/1.6 Inter;color:#2B3B52;margin-top:18px;max-width:640px}
@@ -295,11 +296,11 @@ h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;colo
 
 /* portada */
 .cover{background:${C.navy};padding:0}
-.cover .band{position:absolute;left:1080px;top:0;width:150px;height:900px;background:rgba(255,255,255,.04);transform:skewX(35.8deg);transform-origin:top left}
+.cover .band{position:absolute;left:1080px;top:0;width:150px;height:900px;background:rgba(255,255,255,.04);transform:skewX(-45deg);transform-origin:top left}
 .cover-logo{position:absolute;left:120px;top:300px;width:720px}
 .cover-logo svg{width:100%;height:auto}
 .cover-foot{position:absolute;left:120px;bottom:96px}
-.cover-foot .t{font:700 26px/1 Montserrat;color:#fff}
+.cover-foot .t{font:700 26px/1 Poppins;color:#fff}
 .cover-foot .m{font:500 15px/1 Inter;color:#AFC0D6;margin-top:14px}
 .cover-slogan{position:absolute;right:120px;bottom:96px;font:600 16px/1 Inter;color:${C.gold}}
 .cover .pn{display:none}
@@ -311,12 +312,12 @@ h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;colo
 .facts b{font-weight:600}
 .traits{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .traits div{background:${C.mist};border-radius:6px;padding:14px 16px}
-.traits b{display:block;font:800 15px/1 Montserrat;letter-spacing:.02em}
+.traits b{display:block;font:700 15px/1 Poppins;letter-spacing:.02em}
 .traits span{display:block;font:400 14px/1.4 Inter;color:${C.slate};margin-top:7px}
 .tone{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .tone div{border-radius:6px;padding:16px;font:500 14.5px/1.45 Inter}
 .tone p+p{margin-top:8px}
-.tone .lbl{font:700 12px/1 Montserrat;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
+.tone .lbl{font:700 12px/1 Poppins;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
 .tone .yes{border:1.5px solid ${C.navy}}
 .tone .no{border:1.5px dashed #C3CCD8;color:#8C99AB}
 .tone .no p:not(.lbl){text-decoration:line-through}
@@ -339,7 +340,7 @@ h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;colo
 .v .art svg{width:70%;height:auto;max-height:150px}
 .v .art.row{gap:22px}.v .art.row svg{width:auto;height:120px}
 .v p{font:400 14px/1.45 Inter;color:${C.slate}}
-.v p b{display:block;font:700 15px/1.3 Montserrat;color:${C.navy};margin-bottom:4px}
+.v p b{display:block;font:700 15px/1.3 Poppins;color:${C.navy};margin-bottom:4px}
 
 /* color */
 .colorv{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -356,14 +357,14 @@ h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;colo
 .mins > div{border:1px solid #DCE3EC;border-radius:8px;padding:22px;height:170px;display:flex;flex-direction:column;justify-content:space-between}
 .mins .art svg{width:100%;height:auto}
 .mins p{font:400 13.5px/1.4 Inter;color:${C.slate}}
-.mins p b{display:block;font:700 14px/1.3 Montserrat;color:${C.navy}}
+.mins p b{display:block;font:700 14px/1.3 Poppins;color:${C.navy}}
 
 /* paleta */
 .pal{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
 .sw{border-radius:8px;padding:20px 18px;height:300px;display:flex;flex-direction:column}
 .sw.big{grid-column:span 2}
 .sw:not(.big){grid-column:span 2;height:190px}
-.sw .nm{font:800 20px/1 Montserrat}
+.sw .nm{font:700 20px/1 Poppins}
 .sw .rl{font:500 13px/1.35 Inter;opacity:.8;margin-top:8px}
 .sw dl{margin-top:auto;display:grid;grid-template-columns:64px 1fr;row-gap:5px;font:500 13px/1.2 Inter}
 .sw dt{opacity:.65;font-weight:600;letter-spacing:.06em;font-size:11px;padding-top:1px}
@@ -372,7 +373,7 @@ h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;colo
 .prop span{display:flex;align-items:center;padding-left:12px;font:700 12px/1 Inter;color:#fff}
 
 /* tipografía */
-.type .fam{font:700 14px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;color:${C.slate}}
+.type .fam{font:700 14px/1 Poppins;letter-spacing:.16em;text-transform:uppercase;color:${C.slate}}
 .type .aa{font-size:150px;line-height:1;margin:10px 0 4px;letter-spacing:-.02em}
 .type .role{font:500 16px/1.4 Inter}
 .type .weights{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:18px}
@@ -383,19 +384,19 @@ h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;colo
 .icons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .icons div{background:${C.mist};border-radius:8px;height:128px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:20px}
 .icons svg{width:48px;height:48px}
-.icons span{font:700 13.5px/1.2 Montserrat}
+.icons span{font:700 13.5px/1.2 Poppins}
 .res{display:grid;gap:14px}
 .res > div{display:grid;grid-template-columns:250px 1fr;gap:24px;align-items:center}
 .res p{font:400 14px/1.5 Inter;color:${C.slate}}
-.res p b{display:block;font:700 15px/1.3 Montserrat;color:${C.navy};margin-bottom:3px}
+.res p b{display:block;font:700 15px/1.3 Poppins;color:${C.navy};margin-bottom:3px}
 .r1 .diag{height:110px;background:${C.navy};border-radius:8px;position:relative;overflow:hidden}
-.r1 .diag::after{content:'';position:absolute;left:120px;top:0;width:40px;height:110px;background:rgba(255,255,255,.08);transform:skewX(35.8deg);transform-origin:top left}
+.r1 .diag::after{content:'';position:absolute;left:170px;top:0;width:40px;height:110px;background:rgba(255,255,255,.08);transform:skewX(-45deg);transform-origin:top left}
 .pricetag{background:${C.gold};border-radius:6px;padding:16px 18px;height:110px}
-.pricetag .k{display:block;font:800 11px/1 Montserrat;letter-spacing:.12em}
-.pricetag .a{display:block;font:800 60px/1 Montserrat;letter-spacing:-.03em;margin-top:6px}
+.pricetag .k{display:block;font:700 11px/1 Poppins;letter-spacing:.12em}
+.pricetag .a{display:block;font:800 60px/1 Poppins;letter-spacing:-.03em;margin-top:6px}
 .res .card{background:${C.mist};border-radius:8px;padding:16px 18px;height:110px;position:relative}
-.res .card .n{position:absolute;right:16px;top:16px;font:700 11px/1 Montserrat;color:${C.blue};letter-spacing:.1em}
-.res .card b{display:block;font:800 15px/1 Montserrat;margin-top:30px}
+.res .card .n{position:absolute;right:16px;top:16px;font:700 11px/1 Poppins;color:${C.blue};letter-spacing:.1em}
+.res .card b{display:block;font:700 15px/1 Poppins;margin-top:30px}
 .res .card small{display:block;font:500 12px/1 Inter;color:${C.slate};margin-top:9px}
 
 /* incorrectos */
@@ -409,21 +410,21 @@ h4{font:700 13px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;colo
 .wrong .x{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#D64545;color:#fff;font-size:12px}
 
 /* aplicaciones */
-.apps{display:grid;grid-template-columns:600px 1fr;gap:56px;align-items:start}
-.apps figure img{width:600px;height:600px;display:block;border-radius:6px;box-shadow:0 0 0 1px #DCE3EC}
+.apps{display:grid;grid-template-columns:480px 1fr;gap:64px;align-items:start}
+.apps figure img{width:480px;height:600px;display:block;border-radius:6px;box-shadow:0 0 0 1px #DCE3EC}
 .apps figcaption{font:500 13px/1 Inter;color:${C.slate};margin-top:12px}
 .side{display:grid;gap:34px}
 .ph-mock{background:${C.mist};border-radius:10px;padding:28px;display:flex;align-items:center;gap:22px}
 .avatar svg{width:120px;height:120px}
-.ph-mock b{display:block;font:800 22px/1.2 Montserrat}
+.ph-mock b{display:block;font:700 22px/1.2 Poppins}
 .ph-mock span{display:block;font:400 15px/1.4 Inter;color:${C.slate};margin-top:6px}
 .sig-mock{border:1px solid #DCE3EC;border-radius:10px;padding:28px;display:flex;align-items:center;gap:26px}
 .sig-mock .art{width:220px;padding-right:26px;border-right:1px solid #DCE3EC}
 .sig-mock .art svg{width:100%;height:auto}
-.sig-t b{display:block;font:700 15px/1.3 Montserrat}
+.sig-t b{display:block;font:700 15px/1.3 Poppins}
 .sig-t span{display:block;font:400 13.5px/1.45 Inter;color:${C.slate};margin-top:5px}
 </style></head><body>
-${pages.map((p, i) => `<section class="page ${p.cls}">${p.body}<div class="pn"><span>NexoLab · Manual de identidad visual</span><span>${String(i + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span></div></section>`).join('\n')}
+${pages.map((p, i) => `<section class="page ${p.cls}">${p.body}<div class="pn"><span>Tareita · Manual de identidad visual</span><span>${String(i + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span></div></section>`).join('\n')}
 </body></html>`;
 }
 

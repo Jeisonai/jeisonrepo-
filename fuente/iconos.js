@@ -1,5 +1,5 @@
-// Iconografía NexoLab: trazo lineal 2.6 px (retícula 40), terminaciones redondeadas,
-// un solo detalle en Dorado Lab por ícono.
+// Iconografía Tareita: trazo lineal 2.6 px (retícula 40), terminaciones redondeadas,
+// un solo detalle en Amarillo Lápiz por ícono.
 const { COLORS: C } = require('./brand');
 
 const wrap = (body, size = 40, stroke = C.navy, sw = 2.6) =>
